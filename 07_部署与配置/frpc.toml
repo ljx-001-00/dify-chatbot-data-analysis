@@ -1,0 +1,13 @@
+serverAddr = "203.0.113.10"
+serverPort = 7000
+auth.token = "<FRP_AUTH_TOKEN>"
+loginFailExit = false
+log.to = "console"
+log.level = "info"
+
+[[proxies]]
+name = "wechat"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 80
+remotePort = 80

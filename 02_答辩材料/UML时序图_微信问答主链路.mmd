@@ -1,0 +1,34 @@
+%% 微信智能客服问答 · 主链路 UML 时序图（Mermaid 源码）
+%% 在线编辑：https://mermaid.live 粘贴即可；本地渲染见 uml_render\uml.html
+sequenceDiagram
+    autonumber
+    actor U as 微信用户
+    participant WX as 微信公众平台<br/>(腾讯服务器)
+    participant FRP as frp 隧道<br/>frps 203.0.113.10 / frpc P1
+    participant BOT as Flask 回调服务<br/>wechat_public_bot.py<br/>P1 : 80
+    participant DIFY as Dify 工作流 1.8.0<br/>P2 : 80
+    participant KB as 知识库检索<br/>bce-embedding + Weaviate
+    participant LLM as 大模型<br/>qwen-plus(云端)<br/>Xinference(本地降级)
+    participant DB as MySQL 8.0<br/>P2 : 3306
+
+    U->>WX: 发送提问「R40-A0额定功率多少」
+    WX->>FRP: POST /wechat（加密 XML，安全模式）
+    FRP->>BOT: frpc 转发 → 127.0.0.1:80
+    BOT->>BOT: 签名校验 + AES 解密（wechatpy）
+    BOT->>DIFY: POST /v1/chat-messages（超时 1.5s/4.5s）
+    DIFY->>KB: 知识检索（提示词引用 context）
+    KB-->>DIFY: Top-K 知识片段（召回 5/5）
+    DIFY->>LLM: 系统提示词 + 检索上下文
+    LLM-->>DIFY: 生成回答（端到端中位 1.65s）
+    DIFY-->>BOT: answer 文本
+    par 主链路（微信 5 秒硬约束内）
+        BOT-->>WX: encrypt_message 加密回复
+        WX-->>U: 「2000W」（实测 2 秒内）
+    and 后台线程（不阻塞回复）
+        BOT--)DB: INSERT chathistory 异步落库
+    end
+    alt Dify 超时 / 异常
+        BOT-->>WX: 兜底话术回复
+        WX-->>U: 「当前咨询人数较多，请稍后再试」
+    end
+    note over DB: 离线分析链路：data_analysis 01~17 脚本（清洗/jieba分词/SnowNLP情感/LDA主题/词频）<br/>→ datacube_export 7 张 CSV → Flask+ECharts 可视化大屏（P1 : 5001）

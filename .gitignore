@@ -1,0 +1,28 @@
+# 虚拟环境与离线依赖（体积过大，按 requirements.txt 自行安装）
+.venv/
+venv/
+libs/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# 密钥
+.env
+*.key
+*.pem
+
+# IDE
+.idea/
+.vscode/
+
+# 中间产物
+*.pkl
+*.log
+output/*.tmp
+
+# 系统
+Thumbs.db
+.DS_Store

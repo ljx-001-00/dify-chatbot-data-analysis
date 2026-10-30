@@ -1,0 +1,50 @@
+{
+  "records_rows": 84252,
+  "records_span": [
+    "2023-03-01 00:05:18",
+    "2024-08-28 23:51:04"
+  ],
+  "records_distinct": 66862,
+  "wechat_rows": 128,
+  "wechat_blocked": 2,
+  "clean_rows": 22575,
+  "clean_months": 18,
+  "clean_month_min": "2023-03",
+  "clean_month_max": "2024-08",
+  "avg_len": 24.2,
+  "window_rows": 17191,
+  "hour_peak": 10,
+  "hour_peak_n": 1272,
+  "hour_low": 3,
+  "hour_low_n": 75,
+  "busy_ratio": 84.28,
+  "month_top": [
+    "2024-05",
+    1756
+  ],
+  "month_low": [
+    "2023-11",
+    861
+  ],
+  "sentiment": {
+    "中性": [
+      9998,
+      58.16
+    ],
+    "负面": [
+      7001,
+      40.72
+    ],
+    "正面": [
+      192,
+      1.12
+    ]
+  },
+  "topic_counts": {
+    "售后与退换": 3665,
+    "物流时效": 2673,
+    "退款与质量": 4045,
+    "选购咨询": 3442,
+    "配送取件": 3361
+  }
+}

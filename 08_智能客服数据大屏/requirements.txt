@@ -1,0 +1,14 @@
+# ===== 大屏 dashboard 必需（当前环境已装，仅新环境需要）=====
+flask>=2.0
+
+# ===== 数据分析 data_analysis 需要 =====
+# 原交付包内置 libs\ 离线依赖目录（cfg.py 会自动挂载 sys.path）；
+# 本仓库未包含 libs\，全新环境按以下清单 pip 安装即可：
+pandas>=1.5
+numpy>=1.23
+jieba>=0.42
+gensim>=4.3
+snownlp>=0.12
+matplotlib>=3.6
+pymysql>=1.0
+pillow>=9.0
