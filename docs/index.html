@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>热水器客服 · 聊天数据智能分析大屏</title>
+<!-- GitHub Pages 静态版：由 export_static.py 生成 -->
+<link rel="stylesheet" href="static/css/screen.css" />
+</head>
+<body>
+<!-- 背景层 -->
+<div class="bg-layer"></div>
+<canvas id="fx"></canvas>
+
+<!-- 舞台：固定 1920x1080，由 JS 等比缩放 -->
+<div class="stage" id="stage">
+
+  <!-- ============ 顶部 ============ -->
+  <header class="hd">
+    <div class="hd-deco hd-deco-l"><img src="static/img/header-left.png" alt="" /></div>
+    <div class="hd-mid">
+      <div class="hd-bgimg"></div>
+      <h1 class="hd-title">
+        <span class="hd-main">热水器客服 · 聊天数据智能分析</span>
+        <span class="hd-sub">CHAT DATA INTELLIGENCE DASHBOARD</span>
+      </h1>
+    </div>
+    <div class="hd-deco hd-deco-r"><img src="static/img/header-right.png" alt="" /></div>
+    <div class="hd-right">
+      <div class="clock" id="clock">--:--:--</div>
+      <div class="date" id="date">----</div>
+    </div>
+    <div class="hd-left">
+      <div class="sysline"><i class="dot"></i>数据源 · MySQL chat.records</div>
+      <div class="sysline dim" id="genAt">--</div>
+    </div>
+  </header>
+
+  <!-- ============ KPI ============ -->
+  <section class="kpi">
+    <div class="kpi-card">
+      <div class="kpi-ico">∑</div>
+      <div class="kpi-body">
+        <div class="kpi-num" id="kTotal" data-num="0">0</div>
+        <div class="kpi-label">累计聊天消息</div>
+      </div>
+      <div class="kpi-glow"></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-ico">▦</div>
+      <div class="kpi-body">
+        <div class="kpi-num" id="kMonths" data-num="0">0</div>
+        <div class="kpi-label">覆盖月份 / 个</div>
+      </div>
+      <div class="kpi-glow"></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-ico">◔</div>
+      <div class="kpi-body">
+        <div class="kpi-num" id="kPeak">--</div>
+        <div class="kpi-label" id="kPeakLabel">咨询峰值时段</div>
+      </div>
+      <div class="kpi-glow"></div>
+    </div>
+    <div class="kpi-card danger">
+      <div class="kpi-ico">!</div>
+      <div class="kpi-body">
+        <div class="kpi-num" id="kNeg" data-num="0" data-suffix="%">0</div>
+        <div class="kpi-label">负面情绪占比</div>
+      </div>
+      <div class="kpi-glow"></div>
+    </div>
+  </section>
+
+  <!-- ============ 主体三列 ============ -->
+  <main class="main">
+
+    <!-- 左列 -->
+    <div class="col col-left">
+      <div class="panel">
+        <div class="p-hd"><span class="p-t">情感分布</span><span class="p-tag">SENTIMENT</span></div>
+        <div class="p-bd"><div class="chart" id="cSentiment"></div></div>
+        <i class="cnr cnr-tl"></i><i class="cnr cnr-tr"></i><i class="cnr cnr-bl"></i><i class="cnr cnr-br"></i>
+      </div>
+      <div class="panel">
+        <div class="p-hd"><span class="p-t">客户诉求主题分布</span><span class="p-tag">LDA / 5 TOPICS</span></div>
+        <div class="p-bd"><div class="chart" id="cTopic"></div></div>
+        <i class="cnr cnr-tl"></i><i class="cnr cnr-tr"></i><i class="cnr cnr-bl"></i><i class="cnr cnr-br"></i>
+      </div>
+      <div class="panel">
+        <div class="p-hd"><span class="p-t">月度主题趋势 · 五大诉求演变</span><span class="p-tag">TREND</span></div>
+        <div class="p-bd"><div class="chart" id="cTopicTrend"></div></div>
+        <i class="cnr cnr-tl"></i><i class="cnr cnr-tr"></i><i class="cnr cnr-bl"></i><i class="cnr cnr-br"></i>
+      </div>
+    </div>
+
+    <!-- 中列 -->
+    <div class="col col-center">
+      <div class="panel panel-lg">
+        <div class="p-hd"><span class="p-t">客户之声 · 高频词云</span><span class="p-tag">WORD CLOUD</span></div>
+        <div class="p-bd"><div class="chart" id="cWordCloud"></div></div>
+        <i class="cnr cnr-tl"></i><i class="cnr cnr-tr"></i><i class="cnr cnr-bl"></i><i class="cnr cnr-br"></i>
+      </div>
+      <div class="panel">
+        <div class="p-hd"><span class="p-t">月度消息量</span><span class="p-tag">MONTHLY VOLUME</span></div>
+        <div class="p-bd"><div class="chart" id="cMonth"></div></div>
+        <i class="cnr cnr-tl"></i><i class="cnr cnr-tr"></i><i class="cnr cnr-bl"></i><i class="cnr cnr-br"></i>
+      </div>
+    </div>
+
+    <!-- 右列 -->
+    <div class="col col-right">
+      <div class="panel">
+        <div class="p-hd"><span class="p-t">24 小时咨询密度</span><span class="p-tag">HOURLY</span></div>
+        <div class="p-bd"><div class="chart" id="cHour"></div></div>
+        <i class="cnr cnr-tl"></i><i class="cnr cnr-tr"></i><i class="cnr cnr-bl"></i><i class="cnr cnr-br"></i>
+      </div>
+      <div class="panel">
+        <div class="p-hd"><span class="p-t">情感趋势 · 12 个月</span><span class="p-tag">TREND</span></div>
+        <div class="p-bd"><div class="chart" id="cSentTrend"></div></div>
+        <i class="cnr cnr-tl"></i><i class="cnr cnr-tr"></i><i class="cnr cnr-bl"></i><i class="cnr cnr-br"></i>
+      </div>
+      <div class="panel panel-log">
+        <div class="p-hd"><span class="p-t">运行洞察</span><span class="p-tag">INSIGHT</span></div>
+        <div class="p-bd">
+          <ul class="log-list" id="logList"></ul>
+        </div>
+        <i class="cnr cnr-tl"></i><i class="cnr cnr-tr"></i><i class="cnr cnr-bl"></i><i class="cnr cnr-br"></i>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ============ 底部跑马灯 ============ -->
+  <footer class="ft">
+    <span class="ft-tag">实时指标</span>
+    <div class="ft-marquee"><div class="ft-track" id="ticker"></div></div>
+    <span class="ft-right">Dify 1.8.0 · qwen-plus · MySQL 8.0</span>
+  </footer>
+
+</div>
+
+<script src="static/echarts.min.js"></script>
+<script src="static/echarts-wordcloud.min.js"></script>
+<script src="static/js/screen.js"></script>
+</body>
+</html>

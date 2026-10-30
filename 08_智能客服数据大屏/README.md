@@ -2,6 +2,11 @@
 
 热水器行业智能客服项目「数据分析 + 可视化大屏」一站式整合目录，**双击 `启动大屏.cmd` 即可运行**。
 
+> 只想看效果、不想装环境？访问 GitHub Pages 静态版：
+> https://ljx-001-00.github.io/dify-chatbot-data-analysis/
+>
+> 静态版由 `dashboard\export_static.py` 把 Flask 版导成纯静态站点（`docs/`），数据更新后重跑该脚本即可。
+
 ## 目录结构
 
 ```
